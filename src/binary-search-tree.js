@@ -37,9 +37,9 @@ class BinarySearchTree {
   }
 
   has(data) {
-    return checkForPresence(this.rootNode, data);
+    return hasNode(this.rootNode, data);
 
-    function checkForPresence(node, data) {
+    function hasNode(node, data) {
       if (!node) {
         return false;
       }
@@ -49,30 +49,105 @@ class BinarySearchTree {
       }
 
       if (node.data < data) {
-        return checkForPresence(node.right, data);
+        return hasNode(node.right, data);
       } else if (node.data > data) {
-        return checkForPresence(node.left, data);
+        return hasNode(node.left, data);
       }
     }
   }
 
   find(data) {
-    
+    return findNode(this.rootNode, data);
+
+    function findNode(node, data) {
+      if (!node) {
+        return null;
+      }
+
+      if (node.data === data) {
+        return node;
+      }
+
+      if (node.data < data) {
+        return findNode(node.right, data);
+      } else if (node.data > data) {
+        return findNode(node.left, data);
+      }
+    }
   }
 
   remove(data) {
-    throw new NotImplementedError('Not implemented');
-  // remove line with error and write your code here
+    this.rootNode = removeNode(this.rootNode, data);
+
+    function removeNode(node, data) {
+      // node not found, return null
+      if (!node) {
+        return null;
+      }
+      // search for node
+      if (node.data < data) {
+        node.right = removeNode(node.right, data);
+        return node;
+      } else if (node.data > data) {
+        node.left = removeNode(node.left, data);
+        return node;
+      } else {
+        // node found
+
+        if (!node.right && !node.left) { // has no children
+          return null;
+        }
+
+        if (!node.right) { // has left child
+          node = node.left;
+          return node;
+        }
+
+        if (!node.left) { // has right child
+          node = node.right;
+          return node;
+        }
+
+        // both children
+
+        let minRightChild = node.right;
+        while (minRightChild.left) {
+          minRightChild = minRightChild.left;
+        }
+        node.data = minRightChild.data;
+        node.right = removeNode(node.right, minRightChild.data);
+        return node;
+      }
+    }
   }
 
   min() {
-    throw new NotImplementedError('Not implemented');
-  // remove line with error and write your code here
+
+    if (!this.rootNode) {
+      return null;
+    }
+
+    let currentNode = this.rootNode;
+
+    while (currentNode.left) {
+      currentNode = currentNode.left;
+    }
+    return currentNode.data;
   }
 
   max() {
-    throw new NotImplementedError('Not implemented');
-  // remove line with error and write your code here
+
+    if (!this.rootNode) {
+      return null;
+    }
+
+    let currentNode = this.rootNode;
+
+    while (currentNode.right) {
+      currentNode = currentNode.right;
+    }
+
+    return currentNode.data;
   }
 }
 
